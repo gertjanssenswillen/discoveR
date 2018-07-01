@@ -1,0 +1,12 @@
+Package: discoveR
+Type: Package
+Title: Discovery of Proces Models From Event Data
+Version: 0.0.1
+Authors@R: person("Gert","Janssenswillen", email = "gert.janssenswillen@uhasselt.be", 
+  role = c("aut","cre"))
+Description: Algorithms to discover Petri Nets from Event Logs.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: dplyr, bupaR, petrinetR, processmapR, stringr, tidyr, purrr
+RoxygenNote: 6.0.1
