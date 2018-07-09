@@ -4,7 +4,7 @@
 \alias{alpha_miner}
 \title{Alpha Miner}
 \usage{
-alpha_miner(eventlog, flavor = c("traditional"))
+alpha_miner(eventlog, flavor = c("original", "+"))
 }
 \arguments{
 \item{eventlog}{Event log}
