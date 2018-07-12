@@ -7,6 +7,7 @@
 #'
 #' @import dplyr
 #' @import petrinetR
+#' @import edeaR
 
 
 globalVariables(c("."))

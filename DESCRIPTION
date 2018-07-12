@@ -8,5 +8,5 @@ Description: Algorithms to discover Petri Nets from Event Logs.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: dplyr, bupaR, petrinetR, processmapR, stringr, tidyr, purrr
+Imports: dplyr, bupaR, petrinetR, processmapR, stringr, tidyr, purrr, edeaR
 RoxygenNote: 6.0.1

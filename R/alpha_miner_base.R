@@ -6,16 +6,14 @@ alpha_miner_base <- function(eventlog) {
 transitions <- activity_labels(eventlog) %>% as.character()
 
 eventlog %>%
-    group_by_case() %>%
-    first_n(1) %>%
-    activity_labels() %>%
+    start_activities(level = "activity") %>%
+    pull(1) %>%
     as.character() -> start_transitions
 
 eventlog %>%
-    group_by_case() %>%
-    last_n(1) %>%
-    activity_labels() %>%
-    as.character() -> end_transitions
+    end_activities(level = "activity") %>%
+    pull(1) %>%
+    as.character()  -> end_transitions
 
 eventlog %>%
     precedence_matrix %>%
@@ -60,6 +58,7 @@ pmatrix %>%
 
 create_new_pairs <- function(input_pairs) {
 
+
     input_pairs %>%
         rename(ante_a = antecedent, con_a = consequent) %>%
         rename(pair_id_a = pair_id) %>%
@@ -73,8 +72,11 @@ create_new_pairs <- function(input_pairs) {
     merge(pairs_a, pairs_b) %>%
         tbl_df() %>%
         rowwise() %>%
-        mutate(ante_equal = all(ante_a == ante_b)) %>%
-        mutate(con_equal = all(con_a == con_b)) %>%
+        mutate(ante_equal_length = length(ante_a) == length(ante_b)) %>%
+        mutate(con_equal_length = length(con_a) == length(con_b)) %>%
+        filter(ante_equal_length, con_equal_length) %>%
+        mutate(ante_equal = (length(ante_a) == length(ante_b)) & all(ante_a == ante_b)) %>%
+        mutate(con_equal = (length(con_a) == length(con_b)) & all(con_a == con_b)) %>%
         mutate(ante_pref_equal = all(ante_a[-length(ante_a)] == ante_b[-length(ante_b)])) %>%
         mutate(con_pref_equal = all(con_a[-length(con_a)] == con_b[-length(con_b)])) %>%
         filter(pair_id_b < pair_id_a) -> all_combinations
@@ -88,6 +90,7 @@ create_new_pairs <- function(input_pairs) {
             mutate(new_b = ifelse(con_equal, sort(setdiff(ante_a, ante_b)), sort(setdiff(con_a, con_b)))) %>%
             left_join(footprint, by = c("new_a" = "antecedent","new_b" = "consequent")) %>%
             filter(type == "no") %>%
+            ungroup() %>%
             mutate(n_ante = map2(ante_a,ante_b, ~sort(unique(c(.x, .y))))) %>%
             mutate(n_con = map2(con_a, con_b,  ~sort(unique(c(.x, .y))))) -> new_pairs
     } else {
@@ -151,7 +154,7 @@ output %>%
     mutate(descr = paste0(ante_col, "_", cons_col)) %>%
     mutate(place = str_c("p_", descr)) %>%
     ungroup() %>%
-    mutate(flows = map2(antecedent, consequent,  ~data_frame(a = .x, c = .y))) %>%
+    mutate(flows = map2(antecedent, consequent,  ~crossing(a = .x, c = .y))) %>%
     select(place, flows) %>%
     unnest(flows) -> temp
 

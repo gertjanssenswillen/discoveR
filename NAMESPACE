@@ -2,6 +2,7 @@
 
 export(alpha_miner)
 import(dplyr)
+import(edeaR)
 import(petrinetR)
 importFrom(bupaR,activity_labels)
 importFrom(bupaR,filter)
